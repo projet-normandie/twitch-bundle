@@ -1,71 +1,61 @@
 <?php
+
 namespace ProjetNormandie\TwitchBundle\DataProvider;
 
-use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
-use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use TwitchApi\HelixGuzzleClient;
 use TwitchApi\TwitchApi;
-use ProjetNormandie\TwitchBundle\Entity\Twitch;
 
-final class TwitchItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
+final class TwitchItemDataProvider
 {
-    private string $twitchClientId;
-    private string $twitchClientSecret;
-    private string $twitchAccessToken;
-    private string $twitchBroadcasterId;
+    private ?TwitchApi $client = null;
+
+    private ?string $accessToken = null;
+
     private string $twitchScopes = '';
-    private TwitchApi $twitchApi ;
 
-    public function __construct($twitchClientId, $twitchClientSecret, $twitchBroadcasterId) {
-        $this->twitchClientId = $twitchClientId;
-        $this->twitchClientSecret = $twitchClientSecret;
-        $this->twitchBroadcasterId = $twitchBroadcasterId;
-        $helixGuzzleClient = new HelixGuzzleClient($this->twitchClientId);
-        $this->twitchApi = new TwitchApi($helixGuzzleClient, $this->twitchClientId, $this->twitchClientSecret);
+    public function __construct(private readonly ParameterBagInterface $params,)
+    {
     }
 
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    private function getClient(): TwitchApi
     {
-        return Twitch::class === $resourceClass;
-    }
-
-    public function getItem(string $resourceClass, $id, string $operationName = null, array $context = [])
-    {
-        $this->getAccessToken();
-
-        return match ($context['item_operation_name']) {
-            'twitch-channel-info' => $this->getChannelInfo(),
-            'twitch-get-stream' => $this->getStream()
-        };
-    }
-
-    private function getAccessToken(): void
-    {
-        $oauth = $this->twitchApi->getOauthApi();
-        try {
-            $token = $oauth->getAppAccessToken($this->twitchScopes ?? '');
-            $data = json_decode($token->getBody()->getContents());
-
-            // Your bearer token
-            $this->twitchAccessToken = $data->access_token ?? null;
-        } catch (Exception $e) {
-            //TODO: Handle Error
-        } catch (GuzzleException $e) {
-
+        if (null === $this->client) {
+            $helixGuzzleClient = new HelixGuzzleClient($this->params->get('pn.twitch.client_id'));
+            $this->client = new TwitchApi(
+                $helixGuzzleClient,
+                $this->params->get('pn.twitch.client_id'),
+                $this->params->get('pn.twitch.client_secret')
+            );
         }
+        return $this->client;
     }
 
-    private function getChannelInfo()
+
+    private function getAccessToken(): string
     {
-        $response = $this->twitchApi->getChannelsApi()->getChannelInfo($this->twitchAccessToken, $this->twitchBroadcasterId);
-        return json_decode($response->getBody()->getContents());
+        if (null === $this->accessToken) {
+            $oauth = $this->getClient()->getOauthApi();
+            try {
+                $token = $oauth->getAppAccessToken($this->twitchScopes ?? '');
+                $data = json_decode($token->getBody()->getContents());
+
+                // Your bearer token
+                $this->accessToken = $data->access_token ?? null;
+            } catch (Exception $e) {
+                //TODO: Handle Error
+            } catch (GuzzleException $e) {
+            }
+        }
+
+        return $this->accessToken;
     }
 
-    private function getStream()
+    public function getStream(string $username)
     {
-        $response = $this->twitchApi->getStreamsApi()->getStreamForUsername($this->twitchAccessToken, 'videogamesrecords');
+        $response = $this->getClient()->getStreamsApi()->getStreamForUsername($this->getAccessToken(), $username);
         return json_decode($response->getBody()->getContents());
     }
 }
