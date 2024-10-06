@@ -9,25 +9,26 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
 use ProjetNormandie\TwitchBundle\Controller\GetStream;
-use ProjetNormandie\TwitchBundle\Repository\TwitchRepository;
+use ProjetNormandie\TwitchBundle\Repository\ChannelRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Table(name:'pnt_twitch')]
-#[ORM\Entity(repositoryClass: TwitchRepository::class)]
+#[ORM\Table(name:'pnt_channel')]
+#[ORM\Entity(repositoryClass: ChannelRepository::class)]
 #[ApiResource(
+    routePrefix: '/twitch',
     operations: [
         new GetCollection(),
         new Get(),
         new Get(
-            uriTemplate: '/twitches/{id}/get-stream',
+            uriTemplate: '/channels/{id}/get-stream',
             controller: GetStream::class,
         ),
     ],
     normalizationContext: ['groups' => ['twitch:read']
     ]
 )]
-class Twitch
+class Channel
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private int $id;
@@ -40,7 +41,7 @@ class Twitch
     #[Groups(['twitch:read'])]
     #[Assert\Length(max: 255)]
     #[ORM\Column(length: 255, nullable: false)]
-    private string $channel;
+    private string $username;
 
     public function getId(): int
     {
@@ -62,14 +63,14 @@ class Twitch
         $this->name = $name;
     }
 
-    public function getChannel(): string
+    public function getUsername(): string
     {
-        return $this->channel;
+        return $this->username;
     }
 
-    public function setChannel(string $channel): void
+    public function setUsername(string $username): void
     {
-        $this->channel = $channel;
+        $this->username = $username;
     }
 
     public function __toString()

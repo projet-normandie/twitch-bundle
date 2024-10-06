@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ProjetNormandie\TwitchBundle\Controller;
 
 use ProjetNormandie\TwitchBundle\DataProvider\TwitchItemDataProvider;
-use ProjetNormandie\TwitchBundle\Entity\Twitch;
+use ProjetNormandie\TwitchBundle\Entity\Channel;
 use ProjetNormandie\TwitchBundle\Model\Twitch\Stream;
 use ProjetNormandie\TwitchBundle\Serializer\SerializerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,12 +20,12 @@ class GetStream extends AbstractController
 
 
     /**
-     * @param Twitch $twitch
+     * @param Channel $twitch
      * @return JsonResponse
      */
-    public function __invoke(Twitch $twitch): JsonResponse
+    public function __invoke(Channel $twitch): JsonResponse
     {
-        $response = $this->twitchItemDataProvider->getStream($twitch->getChannel());
+        $response = $this->twitchItemDataProvider->getStream($twitch->getUsername());
         $data = json_decode($response->getBody()->getContents())->data;
         if (count($data) === 0) {
             return new JsonResponse(new Stream());

@@ -32,12 +32,12 @@ class Stream implements \JsonSerializable
         $this->gameName = $gameName;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setId(string $id): void
+    public function setId(?string $id): void
     {
         $this->id = $id;
     }
@@ -92,13 +92,14 @@ class Stream implements \JsonSerializable
         $this->viewerCount = $viewerCount;
     }
 
-    public function getStartedAt(): DateTime
+    public function getStartedAt(): ?DateTime
     {
         return $this->startedAt;
     }
 
     public function setStartedAt(mixed $startedAt): void
     {
+
         if (is_string($startedAt)) {
             $this->startedAt = new DateTime($startedAt);
         } else {
