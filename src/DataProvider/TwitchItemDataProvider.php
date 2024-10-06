@@ -4,6 +4,7 @@ namespace ProjetNormandie\TwitchBundle\DataProvider;
 
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use TwitchApi\HelixGuzzleClient;
 use TwitchApi\TwitchApi;
@@ -53,9 +54,8 @@ final class TwitchItemDataProvider
         return $this->accessToken;
     }
 
-    public function getStream(string $username)
+    public function getStream(string $username): ResponseInterface
     {
-        $response = $this->getClient()->getStreamsApi()->getStreamForUsername($this->getAccessToken(), $username);
-        return json_decode($response->getBody()->getContents());
+        return $this->getClient()->getStreamsApi()->getStreamForUsername($this->getAccessToken(), $username);
     }
 }
