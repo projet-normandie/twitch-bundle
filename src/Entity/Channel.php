@@ -73,6 +73,12 @@ class Channel
         $this->username = $username;
     }
 
+    #[Groups(['twitch:read'])]
+    public function getInitial(): string
+    {
+        return substr($this->name, 0, 1);
+    }
+
     public function __toString()
     {
         return $this->getName();
