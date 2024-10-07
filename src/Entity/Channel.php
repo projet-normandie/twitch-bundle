@@ -8,7 +8,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
-use ProjetNormandie\TwitchBundle\Controller\GetStream;
+use ProjetNormandie\TwitchBundle\Controller\Channel\GetStream;
 use ProjetNormandie\TwitchBundle\Repository\ChannelRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
