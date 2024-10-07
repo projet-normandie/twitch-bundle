@@ -1,0 +1,10 @@
+services:
+  sonata.admin.pn.twitch.channel:
+    class: ProjetNormandie\TwitchBundle\Admin\ChannelAdmin
+    tags:
+      - name: sonata.admin
+        model_class: ProjetNormandie\TwitchBundle\Entity\Channel
+        manager_type: orm
+        group: "group.twitch"
+        label: "label.channel"
+
