@@ -8,24 +8,12 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
-use Sonata\AdminBundle\Form\Type\ModelListType;
-use Sonata\AdminBundle\Route\RouteCollectionInterface;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\DoctrineORMAdminBundle\Filter\ChoiceFilter;
-use Sonata\DoctrineORMAdminBundle\Filter\ModelFilter;
-use Sonata\Form\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-
 
 class ChannelAdmin extends AbstractAdmin
 {
     protected $baseRouteName = 'pn_twitch_admin_channel';
-
-
 
 
     /**
@@ -42,6 +30,9 @@ class ChannelAdmin extends AbstractAdmin
                 'label' => 'label.username',
                 'required' => true,
             ])
+            ->add('isCommunity', null, [
+                'label' => 'label.is_community',
+            ])
         ;
 
     }
@@ -54,6 +45,7 @@ class ChannelAdmin extends AbstractAdmin
         $filter
             ->add('id', null, ['label' => 'label.id'])
             ->add('name', null, ['label' => 'label.name'])
+            ->add('isCommunity', null, ['label' => 'label.is_community'])
         ;
     }
 
@@ -67,6 +59,7 @@ class ChannelAdmin extends AbstractAdmin
             ->addIdentifier('id', null, ['label' => 'label.id'])
             ->add('name', null, ['label' => 'label.game', 'editable' => true])
             ->add('username', null, ['label' => 'label.username', 'editable' => true])
+            ->add('isCommunity', null, ['label' => 'label.is_community'])
             ->add('_action', 'actions', [
                 'actions' => [
                     'show' => [],
@@ -84,6 +77,7 @@ class ChannelAdmin extends AbstractAdmin
             ->add('id', null, ['label' => 'label.id'])
             ->add('name', null, ['label' => 'label.name'])
             ->add('username', null, ['label' => 'label.username'])
+            ->add('isCommunity', null, ['label' => 'label.is_community'])
         ;
     }
 }

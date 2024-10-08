@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace ProjetNormandie\TwitchBundle\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -16,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name:'pnt_channel')]
 #[ORM\Entity(repositoryClass: ChannelRepository::class)]
 #[ApiResource(
+    order: ['name' => 'ASC'],
     routePrefix: '/twitch',
     operations: [
         new GetCollection(),
@@ -26,6 +30,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
     ],
     normalizationContext: ['groups' => ['twitch:read']
+    ]
+)]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'isCommunity' => 'exact',
+    ]
+)]
+#[ApiFilter(
+    OrderFilter::class,
+    properties: [
+        'id' => 'ASC',
+        'name' => 'ASC',
     ]
 )]
 class Channel
@@ -42,6 +60,10 @@ class Channel
     #[Assert\Length(max: 255)]
     #[ORM\Column(length: 255, nullable: false)]
     private string $username;
+
+    #[Groups(['twitch:read'])]
+    #[ORM\Column]
+    private bool $isCommunity = false;
 
     public function getId(): int
     {
@@ -77,6 +99,16 @@ class Channel
     public function getInitial(): string
     {
         return substr($this->name, 0, 1);
+    }
+
+    public function isCommunity(): bool
+    {
+        return $this->isCommunity;
+    }
+
+    public function setIsCommunity(bool $isCommunity): void
+    {
+        $this->isCommunity = $isCommunity;
     }
 
     public function __toString()
