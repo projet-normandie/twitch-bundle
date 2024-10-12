@@ -37,10 +37,10 @@ class GetStreams extends AbstractController
             }
 
             $stream = $data[0];
-            $serializer = SerializerRegistry::getSerializer();
+            /*$serializer = SerializerRegistry::getSerializer();
             $serialized = $serializer->serialize($stream, 'json');
-            $deserialized = $serializer->deserialize($serialized, Stream::class, 'json');
-            $streams[] = $deserialized;
+            $deserialized = $serializer->deserialize($serialized, Stream::class, 'json');*/
+            $streams[] = $stream;
         }
 
         return $streams;

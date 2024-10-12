@@ -8,7 +8,7 @@ use DateTime;
 
 class Stream implements \JsonSerializable
 {
-    private ?string $id = null;
+    private ?int $id = null;
     private string $username = '';
     private string $gameId = '';
     private string $gameName = '';
@@ -32,12 +32,12 @@ class Stream implements \JsonSerializable
         $this->gameName = $gameName;
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(?string $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }

@@ -58,4 +58,9 @@ final class TwitchItemDataProvider
     {
         return $this->getClient()->getStreamsApi()->getStreamForUsername($this->getAccessToken(), $username);
     }
+
+    public function getStreams(array $usernames): ResponseInterface
+    {
+        return $this->getClient()->getStreamsApi()->getStreams($this->getAccessToken(), [], $usernames);
+    }
 }
