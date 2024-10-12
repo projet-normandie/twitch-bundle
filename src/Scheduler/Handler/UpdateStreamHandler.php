@@ -45,9 +45,12 @@ readonly class UpdateStreamHandler
         foreach ($data as $twicthStream) {
             $findStream = $this->em->getRepository(Stream::class)->findOneBy(['externalId' => $twicthStream->id]);
 
-            if ($findStream && $twicthStream->viewer_count > $findStream->getViewerCount()) {
-                $findStream->setViewerCount((int) $twicthStream->viewer_count);
-                $this->em->flush();
+
+            if ($findStream) {
+                if ($twicthStream->viewer_count > $findStream->getViewerCount()) {
+                    $findStream->setViewerCount((int) $twicthStream->viewer_count);
+                    $this->em->flush();
+                }
                 continue;
             }
 
