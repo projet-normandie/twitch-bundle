@@ -58,7 +58,7 @@ class Channel
 
     #[Groups(['twitch:read'])]
     #[Assert\Length(max: 255)]
-    #[ORM\Column(length: 255, nullable: false)]
+    #[ORM\Column(length: 255, nullable: false, unique: true)]
     private string $username;
 
     #[Groups(['twitch:read'])]
