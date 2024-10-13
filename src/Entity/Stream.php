@@ -159,5 +159,10 @@ class Stream
     {
         $this->isMature = $isMature;
     }
+
+    public function __toString(): string
+    {
+        return sprintf('Stream [%d]', $this->id);
+    }
 }
 
